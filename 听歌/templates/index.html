@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>听歌小屋</title>
+    <script type="text/javascript" crossorigin="anonymous"
+            integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A=="
+            src="https://lib.baomitu.com/axios/0.27.2/axios.min.js"></script>
+    <script type="text/javascript">/** 显示 歌曲正在加载 */
+        function parenttestblock() {
+            document.getElementById('jz').style.display = 'block';
+        }
+
+        /** 不显示 歌曲正在加载 */
+        function parenttest() {
+            document.getElementById('jz').style.display = 'none';
+        }
+
+        /** 搜索，传给iframe */
+        function sub() {
+            const data = document.getElementById('data').value;
+            const url = '/getMusicMain?key=' + data + '&pn=1&rn=30';
+            document.getElementById('content').src = url;
+
+            parenttestblock();
+        }
+
+
+        /** 播放音乐 */
+        var mlist = [];
+        /** 存放音乐信息 */
+        var i = -1;
+        /** 音乐信息的下标(当前正在播放音乐) */
+        var f = false  /** 判断是否是循环播放 */
+        /** 存放歌词 */
+        var lyric = []
+        /** 判断音乐歌词是否加载好 */
+        var F = false;
+        /** 上一次发送的歌曲请求 */
+        var gqget = null;
+        /** 上一次发送的歌词请求 */
+        var gcget = null;
+
+        /** 如果音乐歌词加载好就为true */
+        function FF() {
+            F = true;
+        }
+
+        /** 当歌曲缓冲可以播放时,开始播放 */
+        function Fplay() {
+            /* 如果歌词加载出来就播放,否则等3000毫秒 */
+            if(F){
+                document.getElementById('audio_bof').play();
+            }
+            else {
+                setTimeout(function () {
+                    document.getElementById('audio_bof').play();
+                }, 3000)
+            }
+        }
+
+        /** 播放音乐准备工作 */
+        function zhunb(url, iid) {
+            let rid = music_(url);
+            showmusic(iid);
+            lrclist(rid);
+            return true
+        }
+
+
+        /** 传入音乐url */
+        function music_(rid) {
+            // document.getElementById('audio_bof').src = url;
+            if (typeof gqget ==='function') {
+                /* 取消上一次发送歌曲的请求 */
+                gqget();
+            }
+
+            axios.get('/getMusicUrl?rid=' + rid, {
+                /* 存储这一次请求 */
+                cancelToken: new axios.CancelToken(function(e) {
+                    gqget = e;
+                })
+            }).then(res => {
+                // console.log(res);
+                if (res.data.status === 200) {
+                    document.getElementById('audio_bof').src = res.data.url;
+                }
+            })
+            return rid
+        }
+
+        /** 设置函数当音乐播放完时进行判断，是否进入下一首还是循环播放 */
+        function bofw() {
+            if (!f) {
+                return;
+            }
+
+            i++;
+            if (i >= mlist.length) {
+                i = 0;
+            }
+            zhunb(mlist[i].url, i);
+            //  /** 设置延迟，等歌曲加载一下在播放，避免歌曲还没加载出来就点击播放，导致无法播放 */
+            // setTimeout(function () {
+            //     document.getElementById('audio_bof').play();
+            // }, 3000)
+        }
+
+        /** 监控器，当页面处于挂载状态时(就是用户切换了界面)，保证顺序播放正常切歌 */
+        document.addEventListener("visibilitychange", function () {
+            /* 当页面处于挂载状态时 */
+            /*  if (document.hidden === true) {}  */
+            document.getElementById('audio_bof').onended = bofw;
+
+        }, false)
+
+
+        /** 添加音乐 */
+        function addmlist(content) {
+            if (mlist === undefined) {
+                mlist = [];
+            }
+            mlist.push(content);
+            i = mlist.length - 1;
+
+            zhunb(content.url, mlist.length - 1);
+        }
+
+        /** 循环播放+ */
+        function xunhuan() {
+            f = false;
+            document.getElementById('audio_bof').loop = true;
+        }
+
+        /** 顺序播放 */
+        function shunxu() {
+            f = true;
+            document.getElementById('audio_bof').loop = false;
+        }
+
+
+        /** 显示已添加播放音乐窗口  */
+        function showmusic(index) {
+            let t = '';
+            for (let ii = 0; ii < mlist.length; ii++) {
+                /* 这里不可以三等于（可能有细节不同） */
+                if (ii == index) {
+                    t = t + '<option class="gedan" value ="' + ii + '" selected="selected">' + mlist[ii].name + '\t---\t' + mlist[ii].author + '\t---\t' + mlist[ii].time + '</option>'
+                } else {
+                    t = t + '<option class="gedan" value ="' + ii + '">' + mlist[ii].name + '\t---\t' + mlist[ii].author + '\t---\t' + mlist[ii].time + '</option>'
+                }
+
+            }
+            document.getElementById('select_music').innerHTML = t;
+        }
+
+        /** 根据以显示的已添加播放音乐窗口，进行跳转播放 */
+        function tiaozhuanbof(ii) {
+            i = ii;
+            let rid = music_(mlist[i].url);
+            lrclist(rid);
+        }
+
+        /** 删除单曲歌曲 */
+        function removemusic() {
+            if (mlist.length === 0) {
+                return;
+            }
+            let obj = document.getElementById('select_music');
+            let index = obj.selectedIndex; //序号，取当前选中选项的序号
+            let val = obj.options[index].value;
+            mlist.splice(val, 1);
+            if (i >= mlist.length) {
+                i = 0;
+            }
+            showmusic(i);
+
+            /* 如果没歌了就不播 */
+            if (mlist.length === 0) {
+                document.getElementById('audio_bof').src = '';
+                i = -1;
+                return;
+            }
+
+            tiaozhuanbof(i);
+        }
+
+        /** 返回歌词,歌词文件格式:[{lineLyric: 歌词, time: 播放时间}, {lineLyric: 歌词, time: 播放时间}...] */
+        function lrclist(musicId) {
+            F = false;
+            const lyricContainer = document.getElementById('lyricContainer');
+            const url = '/getMusicMainLrc?musicId=' + musicId;
+
+            if (typeof gcget ==='function') {
+                /* 取消上一次发送歌词的请求 */
+                gcget();
+            }
+            axios.get(url, {
+                /* 存储这一次请求 */
+                cancelToken: new axios.CancelToken(function(e) {
+                    gcget = e;
+                    console.log(gcget)
+                })
+            }).then(res => {
+                // console.log(res);
+                if (res.data.status === 200) {
+                    lyric = res.data.lrclist;
+                    let t = '';
+                    for (let i = 0; i < lyric.length; i++) {
+                        //显示到页面
+                        t = t + '<p class="label-select-activate" onclick="lrcbof(' + lyric[i]['time'] + ')">' + lyric[i]['lineLyric'] + '</p>';
+                    }
+                    lyricContainer.innerHTML = t;
+                    FF();
+                }
+            })
+        }
+
+        /** 歌曲和歌词同步 */
+        function timeupdate(e) {
+            const lyricContainer = document.getElementById('lyricContainer');
+            //遍历所有歌词，看哪句歌词的时间与当然时间吻合
+            for (let i = 0, ii = lyric.length; i < ii; i++) {
+                if (e.currentTime /*当前播放的时间*/ >= lyric[i]['time']) {
+                    // 如果符合就是红色字体,否则就是黑色字体
+                    lyricContainer.querySelectorAll('p').forEach(function (e){
+                        e.style.color = 'black';
+                    })
+                    lyricContainer.querySelectorAll('p')[i].style.color = 'red';
+                }
+            }
+        }
+
+        /** 选中歌词,从选中的歌词处开始播放 */
+        function lrcbof(time) {
+            document.getElementById('audio_bof').currentTime = time;
+        }
+
+    </script>
+    <style>
+        #app {
+            text-align: center;
+            width: 100%;
+        }
+
+        #data {
+            padding: 10px;
+            width: 80%;
+            margin-top: 30px;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .an {
+            padding: 7px 10px;
+            margin-top: 30px;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .label-select-activate:hover {
+            cursor: pointer !important;
+        }
+
+        .gedan {
+            height: 50px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <input id="data" type="text" placeholder="请输入歌名">
+    <button class="an" onclick="sub()">搜索</button>
+</div>
+<div id="jz" style="text-align: center; display: none; color: red;">加载中请稍后...</div>
+<hr>
+<iframe id="content" onload="this.height=this.contentWindow.document.body.scrollHeight" width="100%" frameborder=no
+        border=0 marginwidth=0 marginheight=0 scrolling=no>
+</iframe>
+
+<div style="text-align: center; margin-top: 50px; margin-bottom: 100px;">
+    <div style="margin-bottom: 20px; width: 100%;">
+        <audio id="audio_bof" loop="loop" controls="controls" onended="bofw()"
+               style="width: 60%;" ontimeupdate="timeupdate(this)" oncanplaythrough="Fplay()"></audio>
+        <div style="margin-top: 10px;">
+            <span>正在播放：</span>
+            <select id="select_music" style="width:30%; height:50px; border:1px solid #ccc; font-size: 20px;"
+                    onchange="tiaozhuanbof(this.value)"></select>
+            <button class="an" style="margin-left: 10px;" onclick="removemusic()">删除当前歌曲</button>
+        </div>
+    </div>
+    <input type="radio" name="0" id="xunhuan" class="label-select-activate" checked="checked" onclick="xunhuan()"><label
+        for="xunhuan"
+        class="label-select-activate"
+        style="margin-right: 100px;" onclick="xunhuan()">循环播放</label>
+    <input type="radio" name="0" id="shunxu" class="label-select-activate" onclick="shunxu()"><label for="shunxu"
+                                                                                                     class="label-select-activate"
+                                                                                                     onclick="shunxu()">顺序播放</label>
+</div>
+<div style="text-align: center; font-size: 20px; font-weight: 600;">歌词(可以从点击的歌词处开始播放)</div>
+<div id="lyricContainer" style="text-align: center; margin-bottom: 100px;"></div>
+<div style="text-align: center; color: #00ACEE; padding-bottom: 100px;">
+    如果连续访问过快，可能会出现错误，这个时候刷新或者回退，等一会然后就可以了(如果出现其他bug可以尝试换个浏览器)
+</div>
+</body>
+</html>

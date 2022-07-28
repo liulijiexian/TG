@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>听歌小屋</title>
+    <script type="text/javascript">
+        window.parent.parenttest();
+        function fu(){
+            window.parent.parenttestblock()
+        }
+
+        function addminu(content) {
+            window.parent.addmlist(content);
+        }
+
+    </script>
+    <style>
+        .a {
+            width: 70%;
+            height: 30px;
+        }
+
+        .b {
+            width: 20%;
+            height: 30px;
+        }
+
+        .c {
+            width: 10%;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+<div style="margin: auto; width: 90%">
+    <table style="text-align: left; width: 100%;">
+        <tr>
+            <td class="a">歌名</td>
+            <td class="b">作者</td>
+            <td class="c">时长</td>
+        </tr>
+        {% for i in content %}
+        <tr>
+            <td class="a"><a href="#" onclick="addminu({{ i }})">{{i.name}}</a></td>
+            <td class="b">{{i.author}}</td>
+            <td class="c">{{i.time}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div style="text-align: center; margin-top: 20px;">
+        {% if content %}
+            <a href="/getMusicMain?key={{key}}&pn={{pn-1}}&rn={{rn}}" onclick="fu()" style="margin-right: 30px;">上一页</a>
+            <a href="/getMusicMain?key={{key}}&pn={{pn+1}}&rn={{rn}}" onclick="fu()">下一页</a>
+
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>
