@@ -109,6 +109,7 @@ class Controller:
         self.__music = []
         for i in self.__musicList.get(key, pn, rn):
             musicDict = {}
+            musicDict['musicimage'] = i['musicimage']  # 歌曲图像
             musicDict['name'] = str(i['name']).strip().replace('&nbsp;', ' ')  # 歌名
             musicDict['author'] = str(i['artist']).strip().replace('&nbsp;', ' ')  # 作者
             # musicDict['url'] = self.getMusicMain(i['rid'])  # 音乐url
