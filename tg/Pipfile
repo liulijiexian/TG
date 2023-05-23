@@ -8,6 +8,10 @@ Flask==1.0.2
 Flask_Cors==3.0.10
 pymongo==3.7.2
 requests==2.27.1
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+itsdangerous==1.1.0
+requests==2.27.1
 
 [dev-packages]
 
