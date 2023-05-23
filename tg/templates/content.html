@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>听歌小屋</title>
+    <script type="text/javascript">
+        window.parent.parenttest();
+        function fu(){
+            window.parent.parenttestblock()
+        }
+
+        function addminu(content) {
+            window.parent.addmlist(content);
+        }
+
+    </script>
+    <style>
+        .music-li {
+            width: 100%;
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .music-li:hover {
+            background-color: #00AFF0;
+            cursor: pointer !important;
+        }
+        .music-li:active {
+            background-color: red;
+        }
+        .music-name {
+            word-break: keep-all; /* 不换行 */
+            white-space: nowrap; /* 不换行 */
+            overflow: hidden; /* 内容超出宽度时隐藏超出部分的内容 */
+            text-overflow: ellipsis; /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+        }
+    </style>
+</head>
+<body>
+<div style="width: 100%">
+    <ul style="padding: 0;">
+        {% for i in content %}
+            <li class="music-li" onclick="addminu({{ i }})">
+                <img src="{{ i.musicimage }}" style="width: 120px; height: 120px; margin-left: 20px; margin-right: 10px;">
+                <div style="text-align: left">
+                    <div class="music-name" style="font-weight: 600; font-size: 20px">{{i.name}}</div>
+                    <div style="font-size: 18px">{{i.author}}</div>
+                    <div style="font-size: 18px">{{i.time}}</div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <div style="text-align: center; margin-top: 20px;">
+        {% if content %}
+            <a href="/getMusicMain?key={{key}}&pn={{pn-1}}&rn={{rn}}" onclick="fu()" style="margin-right: 30px;">上一页</a>
+            <a href="/getMusicMain?key={{key}}&pn={{pn+1}}&rn={{rn}}" onclick="fu()">下一页</a>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>
