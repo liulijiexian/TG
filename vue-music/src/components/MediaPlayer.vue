@@ -3,8 +3,8 @@
 </template>
    
 <script setup lang="ts">
-import APlayer from 'APlayer';
-import 'APlayer/dist/APlayer.min.css';
+import APlayer from 'aplayer';
+import 'aplayer/dist/APlayer.min.css';
 import { useCounterStore } from '@/stores/counter';
 import { onMounted, onBeforeUnmount, watchEffect, watch } from 'vue'
 import { storeToRefs } from 'pinia'
