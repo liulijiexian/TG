@@ -4,5 +4,6 @@ tg后端接口flask实现
 
 vue-music前端接口vite+ts+vue实现
 
+部署在国外的vercel上官网https://vercel.com/
 
 # 项目运行演示地址：https://xiao-nan-music-house-client.vercel.app/
