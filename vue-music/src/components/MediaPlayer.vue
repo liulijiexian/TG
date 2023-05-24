@@ -30,7 +30,7 @@ onMounted(() => {
         });
     });
 
-    jd = watch(conuterProperty.lrclist, () => {
+    jd = watch(conuterProperty.musicUrl, () => {
         let a = true;
         if (conuter.isUser) {
             for (let index = 0; index < ls.length; index++) {
@@ -51,6 +51,7 @@ onMounted(() => {
                 cover: conuter.nowMusicInfo.musicimage,
                 lrc: conuter.lrclist,
             }])
+            conuterProperty.lrclist.value = '[00:00.00]';
             ap.skipForward(); //切换到下一首音频
         }
 
