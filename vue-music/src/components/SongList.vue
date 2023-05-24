@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
 
 <style lang='scss' scoped>
 // @import url("@/assets/css/songList.css");
-@import url("@/assets/css/uili.scss");
+@import url("@/assets/css/uili.css");
 
 .infinite-list-wrapper {
     position: relative;

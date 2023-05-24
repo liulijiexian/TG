@@ -1,0 +1,21 @@
+.ul-style {
+    padding: 0;
+    margin: 0;
+}
+
+
+.ul-style .li-style {
+    list-style-type: none;
+    padding: 5px 0;
+    font-size: 20px;
+
+}
+
+.ul-style .li-style:hover {
+    background-color: #f3f2f2;
+    cursor: pointer;
+}
+
+.ul-style .li-style:active {
+    background-color: #EBEDF0;
+}

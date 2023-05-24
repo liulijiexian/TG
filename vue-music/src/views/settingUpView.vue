@@ -62,5 +62,5 @@ function deleteHistoryRecord() {
 </script>
 
 <style lang='scss' scoped>
-@import url("@/assets/css/uili.scss");
+@import url("@/assets/css/uili.css");
 </style>
