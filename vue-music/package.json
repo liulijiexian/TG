@@ -23,6 +23,7 @@
   "devDependencies": {
     "@iconify-json/ep": "^1.1.10",
     "@iconify-json/fa": "^1.1.4",
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/node": "^18.14.2",
     "@vitejs/plugin-legacy": "^4.0.3",
