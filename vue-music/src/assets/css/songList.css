@@ -1,0 +1,18 @@
+.scroll-size-home {
+    overflow: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.li-style {
+    height: 100px;
+    list-style-type: none;
+    background-color: #f3f2f2;
+    padding: 5px;
+    
+}
+
+
+.li-style + .li-style {
+    border-top: 1px solid black;
+}
