@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@now/python"
+    }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "app.py" }
+  ],
+  "env": {
+    "FLASK_APP": "app.py",
+    "FLASK_ENV": "production"
+  }
+}
