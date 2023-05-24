@@ -22,6 +22,9 @@ export default defineConfig({
   build: {
     // chunkSizeWarningLimit: 1500,  // 大文件报警阈值设置,不建议使用
     rollupOptions: {
+      external: [
+        'APlayer'
+      ],
       output: {
         chunkFileNames: 'static/js/[name]-[hash].js',
         entryFileNames: 'static/js/[name]-[hash].js',

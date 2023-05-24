@@ -28,5 +28,5 @@ declare module 'APlayer' {
       cover?: string;
       lrc?: string;
     }
-  }
+}
   
