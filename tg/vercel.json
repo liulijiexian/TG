@@ -12,6 +12,6 @@
   ],
   "env": {
       "FLASK_APP": "app.py",    
-      "FLASK_ENV": "mangodb"   
+      "FLASK_ENV": "production"   
   },
 }
